@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Soccer Team Assignment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            color: #333;
+        }
+        header {
+        color: #333;
+        padding: 10px 0;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+
+        nav ul li a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            transform: scale(1.1);
+        }
+
+        nav ul li a i {
+            margin-right: 5px;
+        }
+        label {
+            text-align: left;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            animation: fadeIn 1s;
+        }
+        .custom-alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #31708f;
+        background-color: #d9edf7;
+        border-color: #bce8f1;
+        }
+        .custom-alert-danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+        #playersInput, #goalkeepersInput {
+            width: 100%;
+            max-width: 500px;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 16px;
+        }
+        #assignTeamsButton {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        #assignTeamsButton:hover {
+            background-color: #45a049;
+        }
+        #assignTeamsButton:active {
+            transform: scale(0.98);
+            opacity: 0.8;
+        }
+        #resetButton {
+        font-size: 16px;
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        margin-left: 10px;
+        }
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+
+        #resetButton i {
+            margin-right: 5px;
+        }
+        #teamsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+        }
+        #teamsContainer div {
+            margin: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+            h3 {
+            color: #2c3e50;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 5px 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        #loading {
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+        }
+        .fa-spinner {
+            animation: spin 1s infinite linear;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 600px) {
+            #playersInput, #assignTeamsButton, #goalkeepersInput {
+                width: 90%; /* Lebih kecil pada layar kecil */
+                max-width: none; /* Mengabaikan batas maksimum pada layar kecil */
+            }
+            .container {
+                padding: 10px; /* Mengurangi padding pada layar kecil */
+            }
+            body {
+                font-size: 14px; /* Mengurangi ukuran font pada layar kecil */
+            }
+        }
+        @media (max-width: 400px) {
+            .container {
+                margin: 10px; /* Mengurangi margin untuk layar sangat kecil */
+            }
+        }
+        #maxPlayersPerTeam {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        #maxPlayersPerTeam:hover {
+            background-color: #f2f2f2;
+        }
+        #playersCount, #goalkeepersCount {
+            font-size: 16px;
+            margin-top: 10px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            color: #333;
+        }
+        #playersCount i, #goalkeepersCount i {
+            margin-right: 5px;
+            color: #4CAF50;
+        }
+        footer {
+            color: #333;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#"><i class="fas fa-cogs"></i> Generator</a></li>
+                <li><a href="#"><i class="fas fa-info-circle"></i> Info</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Generator Tim Fun Mini Soccer (4 Tim)</h2>
+        <select id="maxPlayersPerTeam">
+            <option value="7"><i class="fas fa-users"></i> 7 orang per tim (termasuk 1 GK) </option>
+            <option value="8"><i class="fas fa-users"></i> 8 orang per tim (termasuk 1 GK) </option>
+            <option value="9"><i class="fas fa-users"></i> 9 orang per tim (termasuk 1 GK) </option>
+            <option value="10"><i class="fas fa-users"></i> 10 orang per tim (termasuk 1 GK) </option>
+        </select><br>
+        <hr style="margin: 20px 0;"> <!-- Garis horizontal untuk memisahkan elemen -->
+        <label for="playersInput">Masukkan nama pemain (tidak termasuk GK), dipisahkan dengan koma:</label><br>
+        <textarea id="playersInput" placeholder=" "></textarea><br>
+        <div id="playersCount"><i class="fas fa-users"></i> Jumlah pemain: 0</div>
+        <hr style="margin: 20px 0;"> <!-- Menambahkan garis horizontal untuk memisahkan elemen -->
+        <label for="goalkeepersInput">Masukkan nama 4 GK, dipisahkan dengan koma:</label><br>
+        <textarea id="goalkeepersInput" placeholder=" "></textarea><br>
+        <div id="goalkeepersCount"><i class="fas fa-user-shield"></i> Jumlah GK: 0</div>
+        <hr style="margin: 20px 0;"> <!-- Garis horizontal untuk memisahkan elemen -->
+        <button id="assignTeamsButton"><i class="fa-solid fa-futbol"></i> Tentukan Tim </button>
+        <button id="resetButton"><i class="fas fa-undo"></i> Reset</button>
+        <div id="loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+        <div id="teamsContainer"></div> <!-- Tempat untuk menampilkan tim dan pemain mereka -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const maxPlayersPerTeamSelect = document.getElementById('maxPlayersPerTeam');
+            const playersInput = document.getElementById('playersInput');
+            const goalkeepersInput = document.getElementById('goalkeepersInput');
+            const playersCount = document.getElementById('playersCount');
+            const goalkeepersCount = document.getElementById('goalkeepersCount');
+            const playersInputLabel = document.querySelector('label[for="playersInput"]');
+
+            function updateCounts() {
+                const playersArray = playersInput.value.split(',').filter(Boolean);
+                const goalkeepersArray = goalkeepersInput.value.split(',').filter(Boolean);
+                playersCount.innerHTML = `<i class="fas fa-users"></i> Jumlah pemain: ${playersArray.length}`;
+                goalkeepersCount.innerHTML = `<i class="fas fa-user-shield"></i> Jumlah GK: ${goalkeepersArray.length}`;
+            }
+            function updateLabel() {
+            const maxPerTeam = parseInt(maxPlayersPerTeamSelect.value, 10);
+            const totalPlayers = maxPerTeam * 4; // Karena ada 4 tim
+            playersInputLabel.textContent = `Masukkan nama ${totalPlayers - 4} pemain (tidak termasuk GK), dipisahkan dengan koma:`;
+            }
+
+            playersInput.addEventListener('input', updateCounts);
+            goalkeepersInput.addEventListener('input', updateCounts);
+
+            function updatePlaceholders() {
+                const maxPerTeam = parseInt(maxPlayersPerTeamSelect.value, 10);
+                const totalPlayers = maxPerTeam * 4; // Karena ada 4 tim
+                playersInput.placeholder = `Masukkan nama ${totalPlayers - 4} pemain (tidak termasuk GK), dipisahkan dengan koma`;
+                goalkeepersInput.placeholder = "Masukkan nama 4 GK, dipisahkan dengan koma";
+            }
+
+            // Memperbarui label saat halaman dimuat
+            updateLabel();
+
+            // Memperbarui placeholder saat halaman dimuat
+            updatePlaceholders();
+
+            // Menambahkan event listener untuk dropdown
+            maxPlayersPerTeamSelect.addEventListener('change', updatePlaceholders);
+
+            // Menambahkan event listener untuk dropdown
+            maxPlayersPerTeamSelect.addEventListener('change', updateLabel);
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // ES6 destructuring swap
+            }
+        }
+    
+        function assignPlayersToTeams(players, goalkeepers) {
+            let teams = {
+                'Team A': [],
+                'Team B': [],
+                'Team C': [],
+                'Team D': []
+            };
+    
+            // Mengacak array goalkeepers sebelum menempatkannya ke dalam tim
+            shuffleArray(goalkeepers);
+    
+            // Menambahkan goalkeepers ke setiap tim secara acak
+            let teamKeys = Object.keys(teams);
+            for (let i = 0; i < goalkeepers.length; i++) {
+                teams[teamKeys[i]].push(goalkeepers[i] + " (GK)");
+            }
+    
+            // Randomly assigning players to teams
+            shuffleArray(players); // Juga mengacak pemain jika diinginkan
+            while (players.length > 0) {
+                for (let team in teams) {
+                    if (players.length > 0) {
+                        let randomIndex = Math.floor(Math.random() * players.length);
+                        let player = players.splice(randomIndex, 1)[0];
+                        teams[team].push(player);
+                    }
+                }
+            }
+    
+            return teams;
+        }
+
+        // Function to display teams and their players
+        function displayTeams(teams) {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = ''; // Menghapus konten sebelumnya
+
+            for (let team in teams) {
+                let teamElement = document.createElement('div');
+                teamElement.innerHTML = `<h2><i class="fas fa-users"></i> ${team}</h2><ul>${teams[team].map((player, index) => `<li>${index + 1}. ${player}</li>`).join('')}</ul>`;
+                container.appendChild(teamElement);
+            }
+        }
+
+        // Main function to process player input and display teams
+        function processPlayersInput() {
+    const input = document.getElementById('playersInput').value;
+    const goalkeepersInput = document.getElementById('goalkeepersInput').value;
+    const maxPerTeam = parseInt(document.getElementById('maxPlayersPerTeam').value, 10);
+    const totalPlayers = (maxPerTeam * 4) - 4; // Because there are 4 teams
+    const players = input.split(',').map(player => player.trim());
+    const goalkeepers = goalkeepersInput.split(',').map(gk => gk.trim());
+
+    if (players.length !== totalPlayers || goalkeepers.length !== 4) {
+        const alertElement = document.createElement('div');
+        alertElement.classList.add('custom-alert', 'custom-alert-danger');
+        alertElement.textContent = `⚠️ Harus ada ${totalPlayers} pemain dan 4 penjaga gawang untuk dibagi menjadi 4 tim!`;
+        document.body.insertBefore(alertElement, document.body.firstChild);
+        setTimeout(() => {
+            alertElement.remove();
+        }, 5000); // Menghapus alert setelah 5 detik
+        return;
+    }
+
+    document.getElementById('loading').style.display = 'block';
+
+    setTimeout(() => {
+        const teams = assignPlayersToTeams(players, goalkeepers);
+        displayTeams(teams);
+        document.getElementById('loading').style.display = 'none';
+    }, 1000);
+}
+
+            document.getElementById('assignTeamsButton').addEventListener('click', processPlayersInput);
+            document.getElementById('resetButton').addEventListener('click', function() {
+            document.getElementById('playersInput').value = '';
+            document.getElementById('goalkeepersInput').value = '';
+            document.getElementById('playersCount').innerHTML = '<i class="fas fa-users"></i> Jumlah pemain: 0';
+            document.getElementById('goalkeepersCount').innerHTML = '<i class="fas fa-user-shield"></i> Jumlah GK: 0';
+            document.getElementById('teamsContainer').innerHTML = ''; // Menghapus konten tim yang ditampilkan sebelumnya
+        });
+    </script>
+    <footer>
+        <p>&copy; 2024 by Syifa Dzikri Tsani. All rights reserved.</p>
+    </footer>
+</body>
+</html>
